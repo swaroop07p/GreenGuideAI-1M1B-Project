@@ -1,0 +1,26 @@
+# Secrets
+.env
+.env.*
+*.key
+*.pem
+
+# Dependencies
+node_modules/
+.venv/
+venv/
+
+# Build files
+dist/
+build/
+
+# Logs/cache
+*.log
+__pycache__/
+.pytest_cache/
+.coverage
+
+# Editor files
+.vscode/
+.idea/
+
+GreenGuideAI_Prompt.md
