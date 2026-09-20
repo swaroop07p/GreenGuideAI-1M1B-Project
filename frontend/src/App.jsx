@@ -7,6 +7,7 @@ import TransparencyPanel from './components/TransparencyPanel';
 import ApiKeyModal from './components/ApiKeyModal';
 import Footer from './components/Footer';
 import { AppProvider } from './context/AppContext';
+import { apiUrl } from './utils/api';
 
 function AppContent() {
   const [hasCalculated, setHasCalculated] = useState(false);
@@ -92,7 +93,7 @@ function AppContent() {
         headers['X-Gemini-API-Key'] = localKey.trim();
       }
 
-      const response = await fetch('/api/calculate-footprint', {
+      const response = await fetch(apiUrl('/api/calculate-footprint'), {
         method: 'POST',
         headers,
         body: JSON.stringify(formData)
@@ -111,7 +112,7 @@ function AppContent() {
     } catch (err) {
       console.warn('Backend connection error or fallback:', err);
       try {
-        await fetch('/api/health');
+        await fetch(apiUrl('/api/health'));
       } catch (e) {
         // disconnected
       }

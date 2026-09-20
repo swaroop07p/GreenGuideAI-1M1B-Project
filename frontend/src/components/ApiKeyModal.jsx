@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Key, CheckCircle2, AlertCircle, X, ExternalLink, ShieldCheck, Sparkles, RefreshCw, Crown, Zap } from 'lucide-react';
 import { useApp } from '../context/AppContext';
+import { apiUrl } from '../utils/api';
 
 export default function ApiKeyModal({ isOpen, onClose, onKeySaved }) {
   const { apiKey, aiStatus, saveApiKey, removeApiKey, refreshAiStatus } = useApp();
@@ -24,7 +25,7 @@ export default function ApiKeyModal({ isOpen, onClose, onKeySaved }) {
     setStatus(null);
 
     try {
-      const res = await fetch('/api/validate-key', {
+      const res = await fetch(apiUrl('/api/validate-key'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

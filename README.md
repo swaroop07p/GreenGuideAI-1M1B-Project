@@ -205,11 +205,33 @@ npm run dev
 
 ### 3. Production Build
 
-To validate or create the production bundle:
+To validate or create the optimized production bundle:
 ```bash
 cd frontend
 npm run build
 ```
+
+---
+
+## 🚀 Production Deployment (Render + Vercel)
+
+GreenGuide AI is configured for one-click production deployment:
+- **Backend (Render)**: Python FastAPI service using [`render.yaml`](./render.yaml).
+- **Frontend (Vercel)**: High-performance React SPA using [`frontend/vercel.json`](./frontend/vercel.json).
+
+For the complete, step-by-step walkthrough with screenshots, environment variable settings, and verification checklists, please see the **[Production Deployment Guide](DEPLOYMENT.md)**.
+
+### Quick Deployment Summary:
+1. **Deploy Backend on Render**:
+   - Create a new **Blueprint** instance in Render and connect this repository (or create a Web Service with Root Directory `backend`).
+   - Copy your deployed backend URL: `https://<your-backend>.onrender.com`.
+2. **Deploy Frontend on Vercel**:
+   - Import the repository in Vercel.
+   - Set **Root Directory** to `frontend`.
+   - Add environment variable: `VITE_API_BASE_URL = https://<your-backend>.onrender.com`.
+   - Click **Deploy**!
+3. **Connect & Secure**:
+   - In Render, set `ALLOWED_ORIGINS` to your Vercel domain (`https://<your-app>.vercel.app`).
 
 ---
 

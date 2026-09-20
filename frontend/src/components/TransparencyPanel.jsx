@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Shield, BookOpen, Scale, Eye, Lock, CheckCircle2, ChevronDown, ChevronUp, Loader2 } from 'lucide-react';
 import { useApp } from '../context/AppContext';
+import { apiUrl } from '../utils/api';
 
 export default function TransparencyPanel({ isOpen, onClose }) {
   const { t } = useApp();
@@ -11,7 +12,7 @@ export default function TransparencyPanel({ isOpen, onClose }) {
   useEffect(() => {
     if (isOpen && !factorsData) {
       setLoading(true);
-      fetch('/api/emission-factors')
+      fetch(apiUrl('/api/emission-factors'))
         .then((res) => res.json())
         .then((data) => {
           setFactorsData(data);

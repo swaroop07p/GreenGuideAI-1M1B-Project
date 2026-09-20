@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { translations } from '../utils/translations';
+import { apiUrl } from '../utils/api';
 
 const AppContext = createContext();
 
@@ -123,7 +124,7 @@ export function AppProvider({ children }) {
       if (keyToCheck && keyToCheck.trim()) {
         headers['X-Gemini-API-Key'] = keyToCheck.trim();
       }
-      const res = await fetch('/api/gemini-status', { headers });
+      const res = await fetch(apiUrl('/api/gemini-status'), { headers });
       if (res.ok) {
         const data = await res.json();
         setAiStatus(data);

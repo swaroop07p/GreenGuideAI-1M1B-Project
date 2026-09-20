@@ -14,10 +14,16 @@ def is_port_in_use(host: str, port: int) -> bool:
             return True
 
 if __name__ == "__main__":
-    host = os.getenv("HOST", "127.0.0.1")
-    port = int(os.getenv("PORT", 8000))
+    is_production = bool(os.getenv("RENDER") or os.getenv("ENVIRONMENT", "").lower() in ("production", "prod"))
     
-    if is_port_in_use(host, port):
+    # In cloud environments (e.g. Render, Railway, Fly.io), bind to 0.0.0.0
+    default_host = "0.0.0.0" if is_production or os.getenv("PORT") else "127.0.0.1"
+    host = os.getenv("HOST", default_host)
+    port = int(os.getenv("PORT", 8000))
+    reload = not is_production and os.getenv("DEBUG", "false").lower() == "true" or (not is_production)
+
+    # In local development, check port availability and suggest alternate port
+    if not is_production and is_port_in_use(host, port):
         print(f"⚠️  Port {port} is already in use by another process or background service.")
         alt_port = 8001 if port == 8000 else port + 1
         print(f"💡 Trying alternate port http://{host}:{alt_port} ...")
@@ -26,5 +32,5 @@ if __name__ == "__main__":
         else:
             print(f"❌ Both port {port} and {alt_port} are occupied. Please close existing processes or specify PORT in .env")
 
-    print(f"🌿 Starting GreenGuide AI Backend on http://{host}:{port}")
-    uvicorn.run("app.main:app", host=host, port=port, reload=True)
+    print(f"🌿 Starting GreenGuide AI Backend on http://{host}:{port} (Environment: {'Production' if is_production else 'Development'})")
+    uvicorn.run("app.main:app", host=host, port=port, reload=reload)

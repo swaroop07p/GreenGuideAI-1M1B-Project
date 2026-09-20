@@ -4,6 +4,7 @@ import {
   HelpCircle, Copy, Check, RotateCcw, Key, AlertCircle, Lightbulb, CheckCircle2
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
+import { apiUrl } from '../../utils/api';
 
 // Sanitize raw LaTeX math notations into clean Unicode text (e.g. $\text{CO}_2\text{e}$ -> CO₂e)
 function sanitizeLatex(text) {
@@ -230,7 +231,7 @@ export default function WhatIfAIChat({ contextData, onOpenApiKeyModal }) {
         headers['X-Gemini-API-Key'] = localKey.trim();
       }
 
-      const response = await fetch('/api/chat', {
+      const response = await fetch(apiUrl('/api/chat'), {
         method: 'POST',
         headers,
         body: JSON.stringify({

@@ -4,6 +4,7 @@ Personal Sustainability & Carbon Footprint Advisor
 """
 
 import time
+import os
 from typing import Dict, Any
 from fastapi import FastAPI, Request, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -35,16 +36,26 @@ app = FastAPI(
     version="2.0.0"
 )
 
-# Configure CORS
+# Configure CORS dynamically for production (Render) and local dev
+cors_origins_env = os.getenv("ALLOWED_ORIGINS", "*").strip()
+if cors_origins_env and cors_origins_env != "*":
+    allowed_origins = [origin.strip() for origin in cors_origins_env.split(",") if origin.strip()]
+    allow_credentials = True
+else:
+    allowed_origins = ["*"]
+    allow_credentials = False
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Permits Vite dev server and production static deployments
-    allow_credentials=True,
+    allow_origins=allowed_origins,
+    allow_credentials=allow_credentials,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
 
+@app.get("/", tags=["System"])
+@app.get("/health", tags=["System"])
 @app.get("/api/health", tags=["System"])
 def health_check():
     """Basic health check and service readiness status."""
@@ -53,7 +64,8 @@ def health_check():
         "service": "GreenGuide AI Backend",
         "version": "2.0.0",
         "timestamp": time.time(),
-        "sdg_alignment": ["SDG 13 - Climate Action", "SDG 12 - Responsible Consumption", "SDG 11 - Sustainable Cities"]
+        "sdg_alignment": ["SDG 13 - Climate Action", "SDG 12 - Responsible Consumption", "SDG 11 - Sustainable Cities"],
+        "docs": "/docs"
     }
 
 
@@ -80,7 +92,6 @@ def gemini_status(request: Request):
     Returns whether a Gemini API key is configured in website settings (header)
     or backend environment, clearly reporting active source with website precedence.
     """
-    import os
     header_key = request.headers.get("x-gemini-api-key", "").strip()
     has_header = bool(header_key)
     has_backend = is_gemini_configured()
